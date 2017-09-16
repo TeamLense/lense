@@ -71,11 +71,8 @@ function getCurrentTabUrl(callback) {
         names += i.src 
         names += '\n'
     }
-    var script = 'console.log(' + names + ');';
-
-    chrome.tabs.executeScript({
-        code: script
-    });
+    console.log("image count: " + ilist.length)
+    console.log(names)
   }
   
   /**
@@ -135,11 +132,20 @@ function getCurrentTabUrl(callback) {
       // Ensure the background color is changed and saved when the dropdown
       // selection changes.
       dropdown.addEventListener('change', () => {
-        logAllImageNames()
         changeBackgroundColor(dropdown.value);
         saveBackgroundColor(url, dropdown.value);
       });
 
 
     });
+  });
+
+  $(function(){
+    $('#container').click(() => {
+      console.log("hello")
+    })
+
+    $('#dropdown').change((event) => {
+      console.log("dropdown")
+    })
   });

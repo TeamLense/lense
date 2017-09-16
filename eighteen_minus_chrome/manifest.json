@@ -23,7 +23,8 @@
             "js": [
               "js/config.js",
               "js/eighteenminus.js"
-            ]
+            ],
+            "run_at": "document_idle"
         }
     ],
 

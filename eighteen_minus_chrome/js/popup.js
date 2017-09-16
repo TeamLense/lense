@@ -1,13 +1,19 @@
-var savedData = {};
+function saveData(data) {
+  var newData = {};
+  newData['key'] = data;
+  chrome.storage.sync.set(newData);
+}
 
-function saveData(enabled, censor) {
-  var data = {};
-  data['key'] = { enable: enabled, censor: censor };
-  chrome.storage.sync.set(data);
+function sendMessage(data) {
+  chrome.tabs.query({active: true, currentWindow: true}, function(tabs) {
+    chrome.tabs.sendMessage(tabs[0].id, data, function(response) {});
+  });
 }
 
 document.addEventListener('DOMContentLoaded', () => {
   chrome.storage.sync.get('key', function(data) {
+    var savedData = {};
+
     if (!chrome.runtime.error) 
       savedData = data.key;
 
@@ -30,7 +36,15 @@ document.addEventListener('DOMContentLoaded', () => {
     switchCheckbox.parent().removeClass('hide');
 
     function saveTotalData() {
-      saveData(switchCheckbox.is(':checked'), {violence: violence.is(':checked'), sexual: sexual.is(':checked')});
+      var data = {
+        enable: switchCheckbox.is(':checked'),
+        censor: {
+          violence: violence.is(':checked'),
+          sexual: sexual.is(':checked')
+        }
+      }
+      saveData(data);
+      //sendMessage(data);
     }
 
     switchCheckbox.click(function() {

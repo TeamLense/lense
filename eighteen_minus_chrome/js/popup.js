@@ -14,8 +14,8 @@ document.addEventListener('DOMContentLoaded', () => {
   chrome.storage.sync.get('key', function(data) {
     var savedData = {};
 
-    if (!chrome.runtime.error) 
-      savedData = data.key;
+    if (!chrome.runtime.error)
+      savedData = data.key || { enable: false, censor: { violence: false, sexual: false} };
 
     var switchCheckbox = $('.switch-checkbox');
     var statusText = $('p.status');

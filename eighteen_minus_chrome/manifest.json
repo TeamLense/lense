@@ -1,10 +1,10 @@
 {
     "manifest_version": 2,
-  
+
     "name": "18-",
     "description": "This extension blocks NSFW images",
     "version": "1.0",
-  
+
     "browser_action": {
         "default_icon": {
             "16": "images/icon16.png",
@@ -21,20 +21,21 @@
                 "<all_urls>"
             ],
             "js": [
-                "/js/eighteenminus.js"
+              "js/config.js",
+              "js/eighteenminus.js"
             ]
         }
     ],
 
     "permissions": [
       "activeTab",
-      "storage"
+      "storage",
+      "https://gateway-a.watsonplatform.net/visual-recognition/api/v3/"
     ],
 
     "background": {
         "scripts": [
           "js/jquery-3.2.1.min.js",
-          "js/config.js",
           "js/popup.js"
         ]
     },

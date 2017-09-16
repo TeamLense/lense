@@ -6,12 +6,13 @@
     "version": "1.0",
   
     "browser_action": {
-      "default_icon": {
-        "16": "images/icon16.png",
-        "24": "images/icon24.png",
-        "32": "images/icon32.png"
-      },
-      "default_popup": "html/popup.html"
+        "default_icon": {
+            "16": "images/icon16.png",
+            "24": "images/icon24.png",
+            "32": "images/icon32.png"
+        },
+        "default_popup": "html/popup.html",
+        "default_title": "Eighteen Minus"
     },
 
     "permissions": [
@@ -20,6 +21,6 @@
     ],
 
     "background": {
-      "scripts": ["js/jquery-3.2.1.min.js", "js/popup.js"]
+        "scripts": ["js/jquery-3.2.1.min.js", "js/popup.js"]
     }
 }

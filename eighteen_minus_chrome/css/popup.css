@@ -1,0 +1,16 @@
+body {
+  margin: 10px;
+  white-space: nowrap;
+}
+
+h1.title {
+  text-align: center;
+  vertical-align: middle;
+  font-size: 1.2em;
+}
+h1.title img {
+  vertical-align: middle;
+}
+h1.title span {
+  font-weight: 100;
+}

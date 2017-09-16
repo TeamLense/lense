@@ -1,0 +1,17 @@
+{
+    "manifest_version": 2,
+  
+    "name": "18-",
+    "description": "This extension blocks NSFW images",
+    "version": "1.0",
+  
+    "browser_action": {
+      "default_icon": "icon.png",
+      "default_popup": "popup.html"
+    },
+
+    "permissions": [
+      "activeTab",
+      "storage"
+    ]
+}

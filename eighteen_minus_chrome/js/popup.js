@@ -1,7 +1,3 @@
-// Copyright (c) 2014 The Chromium Authors. All rights reserved.
-// Use of this source code is governed by a BSD-style license that can be
-// found in the LICENSE file.
-
 /**
  * Get the current URL.
  *
@@ -64,17 +60,6 @@ function getCurrentTabUrl(callback) {
     });
   }
 
-  function logAllImageNames() {
-    var ilist = document.images;
-    var names = ""
-    for (var i in ilist) {
-        names += i.src 
-        names += '\n'
-    }
-    console.log("image count: " + ilist.length)
-    console.log(names)
-  }
-  
   /**
    * Gets the saved background color for url.
    *
@@ -136,16 +121,14 @@ function getCurrentTabUrl(callback) {
         saveBackgroundColor(url, dropdown.value);
       });
 
-
     });
   });
 
   $(function(){
-    $('#container').click(() => {
-      console.log("hello")
-    })
-
-    $('#dropdown').change((event) => {
-      console.log("dropdown")
+    $(document).ready(() => {
+      const images = document.images
+      for (var i in images) {
+        console.log(i.src)
+      }
     })
   });

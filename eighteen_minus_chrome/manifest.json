@@ -21,6 +21,10 @@
     ],
 
     "background": {
-        "scripts": ["js/jquery-3.2.1.min.js", "js/popup.js"]
+        "scripts": [
+          "js/jquery-3.2.1.min.js",
+          "js/config.js",
+          "js/popup.js"
+        ]
     }
 }

@@ -100,9 +100,7 @@ function getCurrentTabUrl(callback) {
   // chrome.storage.local allows the extension data to be synced across multiple
   // user devices.
   document.addEventListener('DOMContentLoaded', () => {
-    getCurrentTabUrl((url) => {
-			var images = document.images
-			
+    getCurrentTabUrl((url) => {			
       var dropdown = document.getElementById('dropdown');
   
       // Load the saved background color for this page and modify the dropdown

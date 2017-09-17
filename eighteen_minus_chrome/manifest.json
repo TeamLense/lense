@@ -1,8 +1,8 @@
 {
     "manifest_version": 2,
 
-    "name": "18-",
-    "description": "This extension blocks NSFW images",
+    "name": "Lense",
+    "description": "You can be happier by seeing less",
     "version": "1.0",
 
     "browser_action": {

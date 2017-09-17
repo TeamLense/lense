@@ -239,7 +239,7 @@ function getElementBackgroundUrl(element) {
     if (DEBUG_MODE) {
         console.log("Parsed background URL: " + url);
     }
-    return url;
+    return url.substr(5, url.length - 7);
 }
 
 function blockElementBackground(element) {

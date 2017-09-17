@@ -23,7 +23,7 @@ const filterKeywordList = [];
 var currentRightClickedTarget = null;
 document.addEventListener("mousedown", function(event){
     // mouse right click to get the current target element
-    if(event.button == 2) { 
+    if(event.button == 2) {
         currentRightClickedTarget = event.target;
     }
 }, true);

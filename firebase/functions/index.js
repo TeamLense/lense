@@ -18,6 +18,10 @@ app.post('/new', (req, res) => {
   let req_url = `${config.url}classify?version=2016-05-20&api_key=${config.api_key}&classifier_ids=${req.query.classifier}&url=${url}`;
   axios.get(req_url)
   .then(response => {
+    if (response.data.images[0].classifiers.length <= 0) {
+      res.status(200).send("no related class found");
+      return;
+    }
     image_classes = response.data.images[0].classifiers[0].classes;
     let max_score = 0;
     let top_class;

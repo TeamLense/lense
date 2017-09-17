@@ -33,12 +33,15 @@
       "activeTab",
       "storage",
       "contextMenus",
-      "https://gateway-a.watsonplatform.net/visual-recognition/api/v3/"
+      "https://gateway-a.watsonplatform.net/visual-recognition/api/v3/",
+      "https://us-central1-htn-2017-6fb63.cloudfunctions.net/",
+      "https://d3e6bc75.ngrok.io/htn-2017-6fb63/us-central1/classifiers/"
     ],
 
     "background": {
         "persistent": false,
         "scripts": [
+          "js/axios.min.js",
           "js/jquery-3.2.1.min.js",
           "js/popup.js"
         ]

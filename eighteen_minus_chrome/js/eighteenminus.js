@@ -104,7 +104,6 @@ function onImgElementsLoaded(imgElements) {
             }
 
             let imgsrc = String(img.src);
-            let req = new XMLHttpRequest();
             let req_url = `${config.url}classify?version=2016-05-20&api_key=${config.api_key}&classifier_ids=${config.classifiers.violence}&url=${imgsrc}`;
 
             $.ajax( req_url, {

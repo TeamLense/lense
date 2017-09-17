@@ -61,13 +61,13 @@ document.addEventListener('DOMContentLoaded', () => {
 
   chrome.runtime.onInstalled.addListener(function() {
     chrome.contextMenus.create({
-      id: 'violence',
+      id: 'Violence_1929902703',
       title: 'report this image as violence',
       contexts: ['image']
     });
 
     chrome.contextMenus.create({
-      id: 'sexual',
+      id: 'Sexual_415517634',
       title: 'report this image as sexual',
       contexts: ['image']
     });
@@ -83,7 +83,27 @@ document.addEventListener('DOMContentLoaded', () => {
     if (info.menuItemId == 'unveil') {
       sendMessage({event: 'unveil', imgUrl: info.srcUrl});
     } else {
-      alert(info.menuItemId + '; ' + info.srcUrl);
+      // alert(info.menuItemId + '; ' + info.srcUrl);
+      $.ajax({
+        type: "POST",
+        // url: `https://us-central1-htn-2017-6fb63.cloudfunctions.net/classifiers/new?classifier=${info.menuItemId}`,
+        url: `https://d3e6bc75.ngrok.io/htn-2017-6fb63/us-central1/classifiers/new?classifier=${info.menuItemId}`,
+        contentType: "application/json; charset=utf-8",
+        dataType: 'json',
+        data: JSON.stringify({
+          url: info.srcUrl
+        }),
+        crossDomain: true
+      })
+      .done((res) => {
+        console.log("Done: " + res)
+      })
+      .fail((req, status, err) => {
+        console.log("Fail")
+        console.log("Req: " + req)
+        console.log("Status: " + status)
+        console.log("Err: " + err)
+      })
     }
   });
 });

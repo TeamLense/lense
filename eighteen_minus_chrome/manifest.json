@@ -41,7 +41,6 @@
     "background": {
         "persistent": false,
         "scripts": [
-          "js/axios.min.js",
           "js/jquery-3.2.1.min.js",
           "js/popup.js"
         ]

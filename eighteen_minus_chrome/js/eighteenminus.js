@@ -15,7 +15,7 @@ if (DEBUG_MODE) {
 *        CODE         *
 ************************/
 const ATTR = "EighteenMinus";
-const VIOLENT_KEYWORD_LIST = ["Shoot", "Horror", "Gun"];
+const VIOLENT_KEYWORD_LIST = ["horror", "gun", "bloody", "shoot"];
 const SEXUAL_KEYWORD_LIST = [];
 const filterKeywordList = [];
 

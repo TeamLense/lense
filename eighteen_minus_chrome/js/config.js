@@ -1,7 +1,8 @@
 const config = {
-    "url": "https://gateway-a.watsonplatform.net/visual-recognition/api/v3/",
-    "api_key": "f72f7c2a51b8ba214a3948b279914c80208a2311",
+	"url": "https://gateway-a.watsonplatform.net/visual-recognition/api/v3/",
+    "api_key": "c896536089fc9a40d6e8f4348125e95dbd1d1e69",
     "classifiers": {
-      "violence": "Violence_1929902703"
+	    "violence": "Violence_1327604523",
+	    "sexual": "Violence_1327604523"
     }
 }

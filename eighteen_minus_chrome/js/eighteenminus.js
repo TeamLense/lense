@@ -5,7 +5,7 @@
 *        DEBUG         *
 ************************/
 const DEBUG_MODE = true;
-const violence_list = ["Shoot", "Horror", "Gun"];
+const VIOLENCE_LIST = ["Shoot", "Horror", "Gun"];
 
 if (DEBUG_MODE) {
   console.log('Eighteen Minus Started');
@@ -90,74 +90,74 @@ function onDOMContentLoaded() {
         let alttext = String(img.alt).toLowerCase();
         let imgsrc = String(img.src);
         let req = new XMLHttpRequest();
-        let req_url = `${config.url}classify?version=2016-05-20&api_key=${config.api_key}&classifier_ids=${config.classifiers.violence}&url=${img.src}`;
-        req.open("GET", req_url, true);
-        req.onreadystatechange = function () {
-          if(req.readyState === XMLHttpRequest.DONE && req.status === 200){
-            let res = JSON.parse(req.responseText);
-            if (res.hasOwnProperty('status') && res.status == 'ERROR') {
-              console.error("something went wrong");
-              if (res.hasOwnProperty('statusInfo')) {
-                console.error(res.statusInfo);
-              }
-            } else if (res.images.length != 0) {
-              for (let j = 0; j < res.images.length; j++) {
-                for (var cls in violence_list) {
-                  // res.images[i].classifiers.length > 0 && res.images[i].classifiers.includes(cls)
-                  if ( true ) {
-                    if (img.hasAttribute('srcset')) {
-                      img.removeAttribute('srcset');
-                    };
+        let req_url = `${config.url}classify?version=2016-05-20&api_key=${config.api_key}&classifier_ids=${config.classifiers.violence}&url=${imgsrc}`;
 
-                    // remove source srcsets if children of same parent <picture> element - eg, the Guardian
-                    if (img.parentElement.nodeName == 'PICTURE') {
-                      var theparent = img.parentNode;
-                      for (var child = theparent.firstChild; child !== null; child = child.nextSibling) {
-                        if (child.nodeName == "SOURCE") {
-                          child.removeAttribute('src');
-                          child.removeAttribute('srcset');
-                        };
+        $.ajax( req_url, {
+            dataType: 'json',
+            crossDomain: true
+          })
+         .done(function (res) {
+          if (res.hasOwnProperty('status') && res.status == 'ERROR') {
+            console.error("something went wrong");
+            if (res.hasOwnProperty('statusInfo')) {
+              console.error(res.statusInfo);
+            }
+          } else if (res.hasOwnProperty('images') && res.images.length != 0) {
+            for (let j = 0; j < res.images.length; j++) {
+              for (var cls in VIOLENCE_LIST) {
+
+                if ( res.images[j].classifiers.length > 0 && res.images[j].classifiers.includes(cls) ) {
+                  if (img.hasAttribute('srcset')) {
+                    img.removeAttribute('srcset');
+                  };
+
+                  // remove source srcsets if children of same parent <picture> element - eg, the Guardian
+                  if (img.parentElement.nodeName == 'PICTURE') {
+                    var theparent = img.parentNode;
+                    for (var child = theparent.firstChild; child !== null; child = child.nextSibling) {
+                      if (child.nodeName == "SOURCE") {
+                        child.removeAttribute('src');
+                        child.removeAttribute('srcset');
                       };
                     };
+                  };
 
-                    // knock out lazyloader data URLs so it doesn't overwrite NSFW
-                    if (img.hasAttribute('data-src')) {
-                      img.removeAttribute('data-src');
-                    };
-                    if (img.hasAttribute('data-hi-res-src')) {
-                      img.removeAttribute('data-hi-res-src');
-                    };
-                    if (img.hasAttribute('data-low-res-src')) {
-                      img.removeAttribute('data-low-res-src');
-                    };
+                  // knock out lazyloader data URLs so it doesn't overwrite NSFW
+                  if (img.hasAttribute('data-src')) {
+                    img.removeAttribute('data-src');
+                  };
+                  if (img.hasAttribute('data-hi-res-src')) {
+                    img.removeAttribute('data-hi-res-src');
+                  };
+                  if (img.hasAttribute('data-low-res-src')) {
+                    img.removeAttribute('data-low-res-src');
+                  };
 
-                    // Replacing
-                    var initWidth = img.clientWidth;
-                    var initHeight = img.clientHeight;
-                    img.src = getReplacementUrl();
-                    img.width = initWidth;
-                    img.height = initHeight;
-                    img.alt = 'This image is blocked by Eighteen Minus';
+                  // Replacing
+                  var initWidth = img.clientWidth;
+                  var initHeight = img.clientHeight;
+                  img.src = getReplacementUrl();
+                  img.width = initWidth;
+                  img.height = initHeight;
+                  img.alt = 'This image is blocked by Eighteen Minus';
 
-                    imgBlocked++;
-                    if (DEBUG_MODE) {
-                      console.log('Number of images blocked: ' + imgBlocked);
-                    }
-                    break;
+                  imgBlocked++;
+                  if (DEBUG_MODE) {
+                    console.log('Number of images blocked: ' + imgBlocked);
                   }
+                  break;
                 }
               }
             }
-          } else {
-            console.log(req.readyState + ' ' + req.status);
-            if ( req.responseText.length > 0 ) {
-              console.log(JSON.parse(req.responseText));
-            }
           }
+          }
+        )
+        .fail(function (req, status, err) {
+          console.log(status);
+        })
+        .always(function () {
           img.style.visibility = 'visible';
-
-        }
-        req.send();
+        });
       }
     }
   });

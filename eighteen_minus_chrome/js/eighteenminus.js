@@ -85,6 +85,7 @@ function onDOMContentLoaded() {
         console.log('DOM fully loaded and parsed');
 
     onImgElementsLoaded(document.getElementsByTagName("img"));
+    onDOMupdated();
 }
 
 function onImgElementsLoaded(imgElements) {
@@ -103,37 +104,97 @@ function onImgElementsLoaded(imgElements) {
                 continue;
             }
 
-            let imgsrc = String(img.src);
-            let req_url = `${config.url}classify?version=2016-05-20&api_key=${config.api_key}&classifier_ids=${config.classifiers.violence}&url=${imgsrc}`;
-
-            $.ajax( req_url, {
-                dataType: 'json',
-                crossDomain: true
-            })
-            .done(function (res) {
-                if (res.hasOwnProperty('status') && res.status == 'ERROR') {
-                    console.error("something went wrong");
-                    if (res.hasOwnProperty('statusInfo'))
-                        console.error(res.statusInfo);
-                } else if (res.hasOwnProperty('images') && res.images.length != 0) {
-                    for (let j = 0; j < res.images.length; j++) {
-                        for (var cls in filterKeywordList) {
-                            if ( res.images[j].classifiers.length > 0 && res.images[j].classifiers.includes(cls) ) {
-                                blockImage(img);
-                                break;
-                            }
-                        }
+            analyzeImage(String(img.src), 
+                shouldBlock => {
+                    if (shouldBlock) {
+                        blockImage(img);
                     }
-                }
-            })
-            .fail(function (req, status, err) {
-                console.log(status);
-            })
-            .always(function () {
-                img.style.visibility = 'visible';
-            });
+                },
+                () => {},
+                () => img.style.visibility = 'visible' );
         }
     }
+}
+
+function onDOMupdated() {
+    $("[style*='background:'], [style*='background-image:']").each((index, element) => {
+        if (element.hasAttribute(ATTR)) {
+            return;
+        }
+        element.setAttribute(ATTR, '');
+
+        let initBackground = element.style.background;
+        let initBackgroundImage = element.style.backgroundImage;
+        let backgroundUrl = getElementBackgroundUrl(element);
+        let restoreBackground = () => {
+            element.style.background = initBackground;
+            element.style.backgroundImage = initBackgroundImage;
+        }
+        if (backgroundUrl.length > 0) {
+            element.style.background = initBackground.replace(backgroundUrlRegex, "");
+            element.style.backgroundImage = initBackgroundImage.replace(backgroundUrlRegex, "");
+
+            if (CRAZY_FILTER_MODE) {
+                // In this mode, we block every image!
+                blockElementBackground(element);
+                return;
+            }
+
+            analyzeImage(backgroundUrl,
+                shouldBlock => {
+                    if (shouldBlock) {
+                        blockElementBackground(element);
+                    } else {
+                        restoreBackground();
+                    }
+                },
+                () => restoreBackground(),
+                () => {});
+        }
+    })
+}
+
+function analyzeImage(imgUrl, onComplete, onError, onTerminate) {
+    let req_url = `${config.url}classify?version=2016-05-20&api_key=${config.api_key}&classifier_ids=${config.classifiers.violence}&url=${imgUrl}`;
+
+    $.ajax( req_url, {
+        dataType: 'json',
+        crossDomain: true
+    })
+    .done(function (res) {
+        if (res.hasOwnProperty('status') && res.status == 'ERROR') {
+            console.error("something went wrong");
+            if (res.hasOwnProperty('statusInfo'))
+                console.error(res.statusInfo);
+            onError();
+        } else if (res.hasOwnProperty('images') && res.images.length != 0) {
+            let shouldBlock = false;
+            for (let j = 0; j < res.images.length; j++) {
+                for (var cls in filterKeywordList) {
+                    if (res.images[j].classifiers.length > 0) {
+                        res.images[j].classifiers.classes.forEach(element => {
+                            if (element.class === cls && element.score > 0.6) {
+                                shouldBlock = true;
+                                break;
+                            }
+                        })
+
+                        if (shouldBlock) break;
+                    }
+                }
+            }
+            onComplete(shouldBlock);
+        } else {
+            onComplete(false);
+        }
+    })
+    .fail(function (req, status, err) {
+        console.log(status);
+        onError();
+    })
+    .always(function () {
+        onTerminate();
+    });
 }
 
 function blockImage(image) {
@@ -175,6 +236,47 @@ function blockImage(image) {
     }
 }
 
+var backgroundUrlRegex = /url\(.*\)/;
+
+function getElementBackgroundUrl(element) {
+    let style = window.getComputedStyle(element, false);
+    let background = style.background;
+    let backgroundImage = style.backgroundImage;
+    let url = "";
+    let execRegex = (styleElement) => {
+        let temp = backgroundUrlRegex.exec(styleElement);
+        if (temp !== null && temp.length > 0) {
+            return temp[0];
+        }
+        return "";
+    }
+
+    if (backgroundImage.length > 0) {
+        url = execRegex(backgroundImage);
+    }
+    if (url.length === 0 && backgroundImage.length > 0) {
+        url = execRegex(background);
+    }
+    if (DEBUG_MODE) {
+        console.log("Parsed background URL: " + url);
+    }
+    return url;
+}
+
+function blockElementBackground(element) {
+    let newUrl = 'url(\'' + getReplacementUrl() + '\')';
+    let background = element.style.background;
+    let backgroundImage = element.style.backgroundImage;
+
+    element.style.background = background.replace(backgroundUrlRegex, newUrl);
+    element.style.backgroundImage = newUrl;
+    
+    if (DEBUG_MODE) {
+        imgBlocked++;
+        console.log('Number of images blocked: ' + imgBlocked);
+    }
+}
+
 chrome.storage.sync.get('key', function(setting) {
     if (setting.key.censor.violence) {
         Array.prototype.push.apply(filterKeywordList, VIOLENT_KEYWORD_LIST);
@@ -200,6 +302,7 @@ chrome.storage.sync.get('key', function(setting) {
                     }
                 })
             });
+            onDOMupdated();
         });
         observer.observe(document, { childList: true, subtree: true });
     }

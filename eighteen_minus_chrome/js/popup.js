@@ -4,18 +4,18 @@ function saveData(data) {
   chrome.storage.sync.set(newData);
 }
 
-function sendMessage(data) {
-  chrome.tabs.query({active: true, currentWindow: true}, function(tabs) {
-    chrome.tabs.sendMessage(tabs[0].id, data, function(response) {});
-  });
-}
+//function sendMessage(data) {
+//  chrome.tabs.query({active: true, currentWindow: true}, function(tabs) {
+//    chrome.tabs.sendMessage(tabs[0].id, data, function(response) {});
+//  });
+//}
 
 document.addEventListener('DOMContentLoaded', () => {
   chrome.storage.sync.get('key', function(data) {
     var savedData = {};
 
     if (!chrome.runtime.error)
-      savedData = data.key || { enable: false, censor: { violence: false, sexual: false} };
+      savedData = data.key || { enable: false, censor: { violence: true, sexual: true} };
 
     var switchCheckbox = $('.switch-checkbox');
     var statusText = $('p.status');

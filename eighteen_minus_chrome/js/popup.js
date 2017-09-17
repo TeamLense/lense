@@ -65,13 +65,13 @@ document.addEventListener('DOMContentLoaded', () => {
 
   chrome.runtime.onInstalled.addListener(function() {
     chrome.contextMenus.create({
-      id: 'Violence_1929902703',
+      id: 'violence',
       title: 'report this image as violence',
       contexts: ['all']
     });
 
     chrome.contextMenus.create({
-      id: 'Sexual_415517634',
+      id: 'sexual',
       title: 'report this image as sexual',
       contexts: ['all']
     });

@@ -4,8 +4,8 @@
 /***********************
 *        DEBUG         *
 ************************/
-const DEBUG_MODE = true;
-const CRAZY_FILTER_MODE = true;
+const DEBUG_MODE = false;
+const CRAZY_FILTER_MODE = false;
 
 if (DEBUG_MODE) {
   console.log('Eighteen Minus Started');

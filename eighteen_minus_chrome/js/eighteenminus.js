@@ -71,9 +71,8 @@ function getReplacementUrl() {
 //}
 
 function onDOMContentLoaded() {
-    if (DEBUG_MODE) {
+    if (DEBUG_MODE)
         console.log('DOM fully loaded and parsed');
-    }
 
     onImgElementsLoaded(document.getElementsByTagName("img"));
 }

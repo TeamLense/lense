@@ -58,4 +58,28 @@ document.addEventListener('DOMContentLoaded', () => {
       saveTotalData();
     });
   });
+
+  chrome.runtime.onInstalled.addListener(function() {
+    chrome.contextMenus.create({
+      id: 'violence',
+      title: 'report this image as violence',
+      contexts: ['image']
+    });
+
+    chrome.contextMenus.create({
+      id: 'sexual',
+      title: 'report this image as sexual',
+      contexts: ['image']
+    });
+
+    chrome.contextMenus.create({
+      id: 'unveil',
+      title: 'unveil this image',
+      contexts: ['image']
+    });
+  });
+
+  chrome.contextMenus.onClicked.addListener(function(info, tab) {
+    console.log(info.menuitemid);
+  });
 });

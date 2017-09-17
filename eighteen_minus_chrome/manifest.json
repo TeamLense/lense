@@ -32,10 +32,12 @@
     "permissions": [
       "activeTab",
       "storage",
+      "contextMenus",
       "https://gateway-a.watsonplatform.net/visual-recognition/api/v3/"
     ],
 
     "background": {
+        "persistent": false,
         "scripts": [
           "js/jquery-3.2.1.min.js",
           "js/popup.js"

@@ -26,7 +26,7 @@ document.addEventListener('DOMContentLoaded', () => {
     if (savedData.enable) {
       switchCheckbox.parent().addClass('active');
       switchCheckbox.prop('checked', true);
-      statusText.html('<b>18-</b> running');
+      statusText.html('<b>Lense</b> running');
       filter.slideDown();
     }
 
@@ -50,7 +50,7 @@ document.addEventListener('DOMContentLoaded', () => {
     switchCheckbox.click(function() {
       $(this).parent().toggleClass('active');
       filter.is(':visible') ? filter.slideUp() : filter.slideDown();
-      statusText.html(this.checked ? '<b>18-</b> running' : '<b>18-</b> sleeping');
+      statusText.html(this.checked ? '<b>Lense</b> running' : '<b>Lense</b> sleeping');
       saveTotalData();
     });
 

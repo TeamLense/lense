@@ -170,14 +170,16 @@ function analyzeImage(imgUrl, onComplete, onError, onTerminate) {
         } else if (res.hasOwnProperty('images') && res.images.length != 0) {
             let shouldBlock = false;
             for (let j = 0; j < res.images.length; j++) {
-                for (var cls in filterKeywordList) {
+                for (var cls of filterKeywordList) {
                     if (res.images[j].classifiers.length > 0) {
-                        res.images[j].classifiers.classes.forEach(element => {
-                            if (element.class === cls && element.score > 0.6) {
-                                shouldBlock = true;
-                                break;
-                            }
-                        })
+                        res.images[j].classifiers.forEach(classifier => {
+                            classifier.classes.forEach(item => {
+                                if (item.class === cls && item.score > 0.5) {
+                                    shouldBlock = true;
+                                }
+                            })
+						});
+
 
                         if (shouldBlock) break;
                     }

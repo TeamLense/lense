@@ -20,10 +20,20 @@ const VIOLENT_KEYWORD_LIST = ["Shoot", "Horror", "Gun"];
 const SEXUAL_KEYWORD_LIST = [];
 const filterKeywordList = [];
 
-//var setting = {enable: false};
-//chrome.runtime.onMessage.addListener(function(data, sender, sendResponse) {
-//    setting = data;
-//});
+var currentRightClickedTarget = null;
+document.addEventListener("mousedown", function(event){
+    // mouse right click to get the current target element
+    if(event.button == 2) { 
+        currentRightClickedTarget = event.target;
+    }
+}, true);
+
+// get the message sending from background
+chrome.runtime.onMessage.addListener(function(data, sender, sendResponse) {
+    if (data.event == 'unveil') {
+        console.log(currentRightClickedTarget);
+    }
+});
 
 function checkImage(imageUrl, callback) {
   return callback(true);

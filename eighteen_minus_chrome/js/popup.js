@@ -4,11 +4,11 @@ function saveData(data) {
   chrome.storage.sync.set(newData);
 }
 
-//function sendMessage(data) {
-//  chrome.tabs.query({active: true, currentWindow: true}, function(tabs) {
-//    chrome.tabs.sendMessage(tabs[0].id, data, function(response) {});
-//  });
-//}
+function sendMessage(data) {
+  chrome.tabs.query({active: true, currentWindow: true}, function(tabs) {
+    chrome.tabs.sendMessage(tabs[0].id, data, function(response) {});
+  });
+}
 
 document.addEventListener('DOMContentLoaded', () => {
   chrome.storage.sync.get('key', function(data) {
@@ -80,6 +80,10 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 
   chrome.contextMenus.onClicked.addListener(function(info, tab) {
-    console.log(info.menuitemid);
+    if (info.menuItemId == 'unveil') {
+      sendMessage({event: 'unveil', imgUrl: info.srcUrl});
+    } else {
+      alert(info.menuItemId + '; ' + info.srcUrl);
+    }
   });
 });

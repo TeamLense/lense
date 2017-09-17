@@ -17,7 +17,7 @@ if (DEBUG_MODE) {
 const ATTR = "EighteenMinus";
 const VIOLENT_KEYWORD_LIST = ["horror", "gun", "bloody", "shoot"];
 const SEXUAL_KEYWORD_LIST = [];
-const filterKeywordList = [];
+var filterKeywordList = [];
 
 var imgBlocked = 0;
 var currentRightClickedTarget = null;
@@ -50,15 +50,15 @@ function getReplacementUrl() {
     return chrome.runtime.getURL(replacementUrl);
 }
 
-function onDOMContentLoaded() {
+function onDOMContentLoaded(setting) {
     if (DEBUG_MODE)
         console.log('DOM fully loaded and parsed');
 
-    onImgElementsLoaded(document.getElementsByTagName("img"));
-    onDOMupdated();
+    onImgElementsLoaded(document.getElementsByTagName("img"), setting);
+    onDOMupdated(setting);
 }
 
-function onImgElementsLoaded(imgElements) {
+function onImgElementsLoaded(imgElements, setting) {
     for (var i = 0; i < imgElements.length; ++i) {
         let img = imgElements[i];
 
@@ -81,12 +81,13 @@ function onImgElementsLoaded(imgElements) {
                     }
                 },
                 () => {},
-                () => img.style.visibility = 'visible' );
+                () => img.style.visibility = 'visible',
+                setting );
         }
     }
 }
 
-function onDOMupdated() {
+function onDOMupdated(setting) {
     $("[style*='background:'], [style*='background-image:']").each((index, element) => {
         if (element.hasAttribute(ATTR)) return;
 
@@ -119,13 +120,19 @@ function onDOMupdated() {
                     }
                 },
                 () => restoreBackground(),
-                () => {});
+                () => {},
+                setting);
         }
     })
 }
 
-function analyzeImage(imgUrl, onComplete, onError, onTerminate) {
-    let req_url = `${config.url}classify?version=2016-05-20&api_key=${config.api_key}&classifier_ids=${config.classifiers.violence}&url=${imgUrl}`;
+function analyzeImage(imgUrl, onComplete, onError, onTerminate, setting) {
+    var ids = '';
+    if (setting.censor.violence) ids += conifg.classifiers.violence;
+    if (setting.censor.sexual) ids += ',' + config.classifiers.sexual;
+    if (ids.startwith(',')) ids.substring(1, ids.length);
+
+    let req_url = `${config.url}classify?version=2016-05-20&api_key=${config.api_key}&classifier_ids=${ids}&url=${imgUrl}`;
 
     $.ajax( req_url, {
         dataType: 'json',
@@ -265,7 +272,7 @@ chrome.storage.sync.get('key', function(setting) {
     }
 
     if (setting.key.enable && filterKeywordList.length > 0) {
-        document.addEventListener('DOMContentLoaded', onDOMContentLoaded(), false);
+        document.addEventListener('DOMContentLoaded', onDOMContentLoaded(setting), false);
         var observer = new MutationObserver(mutations => {
             mutations.forEach(mutation => {
                 mutation.addedNodes.forEach(node => {

@@ -128,9 +128,9 @@ function onDOMupdated(setting) {
 
 function analyzeImage(imgUrl, onComplete, onError, onTerminate, setting) {
     var ids = '';
-    if (setting.censor.violence) ids += conifg.classifiers.violence;
-    if (setting.censor.sexual) ids += ',' + config.classifiers.sexual;
-    if (ids.startwith(',')) ids.substring(1, ids.length);
+    if (setting.key.censor.violence) ids += config.classifiers.violence;
+    if (setting.key.censor.sexual) ids += ',' + config.classifiers.sexual;
+    if (ids.startsWith(',')) ids.substring(1, ids.length);
 
     let req_url = `${config.url}classify?version=2016-05-20&api_key=${config.api_key}&classifier_ids=${ids}&url=${imgUrl}`;
 
@@ -148,7 +148,7 @@ function analyzeImage(imgUrl, onComplete, onError, onTerminate, setting) {
             let shouldBlock = false;
             for (let j = 0; j < res.images.length; j++) {
                 for (var cls of filterKeywordList) {
-                    if (res.images[j].classifiers.length > 0) {
+                    if (res.images[j].classifiers && res.images[j].classifiers.length > 0) {
                         res.images[j].classifiers.forEach(classifier => {
                             classifier.classes.forEach(item => {
                                 if (item.class === cls && item.score > 0.5) {

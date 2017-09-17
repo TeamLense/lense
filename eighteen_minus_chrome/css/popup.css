@@ -87,3 +87,7 @@ h2.subtitle {
   margin-top: 10px;
   overflow-y: hidden;
 }
+
+.number {
+  text-align: center;
+}

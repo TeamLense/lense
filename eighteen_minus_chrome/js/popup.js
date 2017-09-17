@@ -44,7 +44,6 @@ document.addEventListener('DOMContentLoaded', () => {
         }
       }
       saveData(data);
-      //sendMessage(data);
     }
 
     switchCheckbox.click(function() {
@@ -59,31 +58,35 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   });
 
+  chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
+    if (request.event == 'number')
+      $('p.number').find('strong').text(request.number);
+  });
+
   chrome.runtime.onInstalled.addListener(function() {
     chrome.contextMenus.create({
       id: 'Violence_1929902703',
       title: 'report this image as violence',
-      contexts: ['image']
+      contexts: ['all']
     });
 
     chrome.contextMenus.create({
       id: 'Sexual_415517634',
       title: 'report this image as sexual',
-      contexts: ['image']
+      contexts: ['all']
     });
 
     chrome.contextMenus.create({
       id: 'unveil',
       title: 'unveil this image',
-      contexts: ['image']
+      contexts: ['all']
     });
   });
 
   chrome.contextMenus.onClicked.addListener(function(info, tab) {
-    if (info.menuItemId == 'unveil') {
+    if (info.menuItemId == 'unveil')
       sendMessage({event: 'unveil', imgUrl: info.srcUrl});
-    } else {
-      // alert(info.menuItemId + '; ' + info.srcUrl);
+    else {
       $.ajax({
         type: "POST",
         // url: `https://us-central1-htn-2017-6fb63.cloudfunctions.net/classifiers/new?classifier=${info.menuItemId}`,
@@ -103,7 +106,7 @@ document.addEventListener('DOMContentLoaded', () => {
         console.log("Req: " + req)
         console.log("Status: " + status)
         console.log("Err: " + err)
-      })
+      });
     }
   });
 });

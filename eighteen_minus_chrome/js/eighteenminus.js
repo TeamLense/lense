@@ -9,7 +9,6 @@ const CRAZY_FILTER_MODE = true;
 
 if (DEBUG_MODE) {
   console.log('Eighteen Minus Started');
-  var imgBlocked = 0;
 }
 
 /***********************
@@ -20,6 +19,7 @@ const VIOLENT_KEYWORD_LIST = ["Shoot", "Horror", "Gun"];
 const SEXUAL_KEYWORD_LIST = [];
 const filterKeywordList = [];
 
+var imgBlocked = 0;
 var currentRightClickedTarget = null;
 document.addEventListener("mousedown", function(event){
     // mouse right click to get the current target element
@@ -31,7 +31,13 @@ document.addEventListener("mousedown", function(event){
 // get the message sending from background
 chrome.runtime.onMessage.addListener(function(data, sender, sendResponse) {
     if (data.event == 'unveil') {
-        currentRightClickedTarget.src = currentRightClickedTarget.getAttribute('EighteenMinus');
+        if (currentRightClickedTarget.nodeName.toLowerCase() === 'img')
+            currentRightClickedTarget.src = currentRightClickedTarget.getAttribute('EighteenMinus');
+        else {
+            backgroundData = JSON.parse(currentRightClickedTarget.getAttribute(ATTR));
+            currentRightClickedTarget.style.background = backgroundData.initBackground;
+            currentRightClickedTarget.style.backgroundImage = backgroundData.initBackgroundImage;
+        }
     }
 });
 
@@ -43,42 +49,6 @@ function getReplacementUrl() {
     var replacementUrl = chrome.runtime.getManifest().web_accessible_resources[0];
     return chrome.runtime.getURL(replacementUrl);
 }
-
-// Deprecated (image replacement)
-//function censorImage(img) {
-  // // remove srcsets, forcing browser to show the replacement - eg, BBC News
-  // if (img.hasAttribute('srcset')) {
-  //     img.removeAttribute('srcset');
-  // };
-  //
-  // // remove source srcsets if children of same parent <picture> element - eg, the Guardian
-  // if (img.parentElement.nodeName == 'PICTURE') {
-  //     var theparent = img.parentNode;
-  //     for (var child = theparent.firstChild; child !== null; child = child.nextSibling) {
-  //         if (child.nodeName == "SOURCE") {
-  //             child.removeAttribute('src');
-  //             child.removeAttribute('srcset');
-  //         };
-  //     };
-  // };
-  //
-  // // knock out lazyloader data URLs so it doesn't overwrite kittens
-  // if (img.hasAttribute('data-src')) {
-  //     img.removeAttribute('data-src');
-  // };
-  // if (img.hasAttribute('data-hi-res-src')) {
-  //     img.removeAttribute('data-hi-res-src');
-  // };
-  // if (img.hasAttribute('data-low-res-src')) {
-  //     img.removeAttribute('data-low-res-src');
-  // };
-
-  // Replacing
-//  img.src = getReplacementUrl();
-//  img.width = initWidth;
-//  img.height = initHeight;
-//  img.alt = 'This image is blocked by Eighteen Minus';
-//}
 
 function onDOMContentLoaded() {
     if (DEBUG_MODE)
@@ -95,7 +65,7 @@ function onImgElementsLoaded(imgElements) {
         // Image is already checked if it has the attribute
         if (!img.hasAttribute(ATTR)) {
             img.style.visibility = "hidden";
-            img.setAttribute(ATTR, '');
+            img.setAttribute(ATTR, img.src);
 
             if (CRAZY_FILTER_MODE) {
                 // In this mode, we block every image!
@@ -118,14 +88,14 @@ function onImgElementsLoaded(imgElements) {
 
 function onDOMupdated() {
     $("[style*='background:'], [style*='background-image:']").each((index, element) => {
-        if (element.hasAttribute(ATTR)) {
-            return;
-        }
-        element.setAttribute(ATTR, '');
+        if (element.hasAttribute(ATTR)) return;
 
         let initBackground = element.style.background;
         let initBackgroundImage = element.style.backgroundImage;
         let backgroundUrl = getElementBackgroundUrl(element);
+
+        element.setAttribute(ATTR, JSON.stringify({backgroundUrl: backgroundUrl, initBackground: initBackground, initBackgroundImage: initBackgroundImage}));
+        
         let restoreBackground = () => {
             element.style.background = initBackground;
             element.style.backgroundImage = initBackgroundImage;
@@ -230,10 +200,10 @@ function blockImage(image) {
     image.height = initHeight;
     image.alt = 'This image is blocked by Eighteen Minus';
 
-    if (DEBUG_MODE) {
-        imgBlocked++;
+    imgBlocked++;
+    chrome.runtime.sendMessage({event: 'number', number: imgBlocked}, function(response) {});
+    if (DEBUG_MODE)
         console.log('Number of images blocked: ' + imgBlocked);
-    }
 }
 
 var backgroundUrlRegex = /url\(.*\)/;

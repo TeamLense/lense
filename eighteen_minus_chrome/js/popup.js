@@ -15,7 +15,7 @@ document.addEventListener('DOMContentLoaded', () => {
     var savedData = {};
 
     if (!chrome.runtime.error)
-      savedData = data.key || { enable: false, censor: { violence: false, sexual: false} };
+      savedData = data.key || { enable: false, censor: { violence: true, sexual: true} };
 
     var switchCheckbox = $('.switch-checkbox');
     var statusText = $('p.status');

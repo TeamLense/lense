@@ -7,10 +7,11 @@ body {
 h1.title {
   text-align: center;
   vertical-align: middle;
-  font-size: 1.2em;
+  font-size: 1.5em;
 }
 h1.title img {
   vertical-align: middle;
+  margin-right: 0.5em;
 }
 h1.title span {
   font-weight: 100;

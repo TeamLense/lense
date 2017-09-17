@@ -31,7 +31,7 @@ document.addEventListener("mousedown", function(event){
 // get the message sending from background
 chrome.runtime.onMessage.addListener(function(data, sender, sendResponse) {
     if (data.event == 'unveil') {
-        console.log(currentRightClickedTarget);
+        currentRightClickedTarget.src = currentRightClickedTarget.getAttribute('EighteenMinus');
     }
 });
 

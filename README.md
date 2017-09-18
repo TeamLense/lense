@@ -1,5 +1,7 @@
 # Lense
 
+This project is created by a team of four including [Liang-Hsuan](https://github.com/Liang-Hsuan), [David](https://github.com/DavidisMe), [Daniel](https://github.com/danblitzhou) and me. It is our submission to Hack the North 2017.
+
 ## Inspiration
 We all love the brighter side of the internet, but sometimes we see disturbing contents such as violent, horrifying, or NSFW images. These contents do damage to our souls and we hate them with passion, so much so that we made **Lense**, an application that helps you stay away from these content.
 
